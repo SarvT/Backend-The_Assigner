@@ -1,7 +1,7 @@
 ### Contact-Us
 
-##GET
+## GET
 ![Get @contact-us](get-request.png)
 
-##POST
+## POST
 ![Post @contact-us](post-request.png)
