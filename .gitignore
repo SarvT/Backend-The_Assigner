@@ -1,2 +1,6 @@
 contact-us/.env
 contact-us/node_modules
+contact-us
+
+user-profile/.env
+user-profile/node_modules
