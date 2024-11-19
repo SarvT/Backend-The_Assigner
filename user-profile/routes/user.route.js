@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { createUser, getUsers } from "../controller/user2.controller.js";
+import { createUser, getUser, getUsers } from "../controller/user.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
 const router = Router();
 
-router.route("/").get(getUsers);
-router.route("/:id").get(getUsers);
+router.route("/findall").get(getUsers);
+router.route("/find").post(getUser);
 router
   .route("/sign-up")
-  .post(upload.fields([{ name: "avatar", maxCount: 1 }]), createUser);
+  .post(upload.single("avatar"), createUser);
 
 export { router };

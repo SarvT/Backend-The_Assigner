@@ -1,68 +1,72 @@
 import { User } from "../model/user.model.js";
-import { APIResponse } from "../APIResponse.js";
-import { APIError } from "../APIError.js";
+import { uploadOnCloud } from "../cloudinary.js";
 
 const createUser = async (req, res) => {
-    const { name, email, phone, education, location } = req.body;
-  
-    // Check for missing required fields
-    if (!name || !email || !phone || !education || !location) {
+  const { name, email, phone, education, location } = req.body;
+
+  // Check for missing required fields
+  if (!name || !email || !phone || !education || !location) {
+    return res.status(400).json({
+      success: false,
+      message: "All fields are required.",
+    });
+  }
+
+  // Check for avatar file
+  const avatarFilePath = req.file?.path;
+  if (!avatarFilePath) {
+    return res.status(400).json({
+      success: false,
+      message: "Profile picture is required.",
+    });
+  }
+
+  // upload image file on cloud
+  const avatarImg = await uploadOnCloud(avatarFilePath);
+
+  // Create a new user
+  try {
+    const newUser = await User.create({
+      name,
+      email,
+      phone,
+      education,
+      // if url is invalid then add blank
+      avatar: avatarImg?.url || "",
+      location,
+    });
+
+    if (!newUser) {
       return res.status(400).json({
         success: false,
-        message: "All fields are required.",
+        message: "There was an issue while signing up the user.",
       });
     }
-  
-    // Check for avatar file
-    const avatarFilePath = req.files?.avatar?.[0]?.path;
-    console.log(avatarFilePath);
-    if (!avatarFilePath) {
-        return res.status(400).json({
-            success: false,
-            message: "Profile picture is required.",
-        });
-    }
-  
-    // Create a new user
-    try {
-      const newUser = await User.create({
-        name,
-        email,
-        phone,
-        education,
-        avatar: avatarFilePath,
-        location,
-      });
-  
-      if (!newUser) {
-        return res.status(400).json({
-          success: false,
-          message: "There was an issue while signing up the user.",
-        });
-      }
-  
-      newUser.save({ validateBeforeSave: false });
-  
-      // Send a success response
-      return res.status(200).json({
-        success: true,
-        message: "User successfully signed up.",
-        data: { newUser },
-      });
-    } catch (error) {
-      // Catch any error during user creation
-      return res.status(500).json({
-        success: false,
-        message: "Error creating user.",
-        error: error.message,
-      });
-    }
-  };
-  
+
+    // save the db
+    newUser.save({ validateBeforeSave: false });
+
+    // Send a success response
+    return res.status(200).json({
+      success: true,
+      message: "User successfully signed up.",
+      data: { newUser },
+    });
+  } catch (error) {
+    // Catch any error during user creation
+    return res.status(500).json({
+      success: false,
+      message: "Error creating user.",
+      error: error.message,
+    });
+  }
+};
 
 const getUsers = async (req, res) => {
   try {
+    // finds all the users
     const users = await User.find();
+
     return res.status(200).json({
       scucess: true,
       message: "Users list is found",
@@ -80,16 +84,22 @@ const getUsers = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  const { id } = req.params;
-  if (!id)
+  // get email of user
+  const { email } = req.body;
+
+  // check for email is there
+  if (!email)
     return res.send(400).json({
       scucess: false,
-      message: "all the fields are required.",
+      message: "email is required.",
     });
 
   try {
-    const user = await User.findById(id);
-    if (!id)
+    // finds user from db
+    const user = await User.find({ email });
+
+    // check for user is there
+    if (!user)
       return res.send(400).json({
         scucess: false,
         message: "user not found.",
