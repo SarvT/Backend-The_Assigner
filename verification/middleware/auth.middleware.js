@@ -9,8 +9,6 @@ const verifyToken = async (req, _, next) => {
     req.header("Authorization")?.replace("Bearer ", "");
     
     if (!token) throw new Error(401, "Unauthorized to make request");
-    console.log(process.env.ACCESS_TOKEN_SECRET);
-    console.log(token);
 
     const fetchedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 

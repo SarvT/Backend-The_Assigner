@@ -3,6 +3,7 @@ import { Response } from "../Response.js";
 import { User } from "../model/user.model.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
+import { transporter } from "../nodemailer.js";
 
 const generateAccessnRefreshToken = async (userId) => {
   try {
@@ -29,11 +30,29 @@ const register = async (req, res) => {
   if (userExist) {
     new Error(409, "User already exist.");
   }
+
   const newUser = await User.create({
     name: name,
     email: email,
     user: user.toLowerCase(),
     password,
+  });
+
+  const accTkn = newUser.generateAccessToken();
+
+  const mailOptions = {
+    from: process.env.EMAIL,
+    to: email,
+    subject: "Verify your account.",
+    text: `Your token for verification is ${accTkn}`,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+    }
   });
 
   const userCreated = await User.findById(newUser._id).select(
@@ -52,40 +71,40 @@ const login = async (req, res) => {
   try {
     const { email, user, password } = req.body;
 
-    // Validate input
     if (!email && !user) {
       return res.status(400).json({ message: "Username or email is empty." });
     }
 
-    // Find user by email or username
     const currUser = await User.findOne({ $or: [{ email }, { user }] });
     if (!currUser) {
       return res.status(404).json({ message: "User does not exist" });
     }
 
-    // Validate password
+
     const isPasswordValid = await currUser.isPasswordCorrect(password);
     if (!isPasswordValid) {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-    // Generate tokens
-    const { accTkn, rfrTkn } = await generateAccessnRefreshToken(currUser._id);
+    const token =
+    req.cookies?.accessToken ||
+    req.header("Authorization")?.replace("Bearer ", "");
+    const accTkn = token
+    const rfrTkn = await currUser.generateRefreshToken()
+    currUser.refreshToken = rfrTkn;
 
-    // Get user session data
+    await currUser.save({ validateBeforeSave: false });
+
     const userSession = await User.findById(currUser._id).select(
       "-password -refreshToken"
     );
 
-    // Cookie options
     const options = {
       httpOnly: true,
-      secure: true, // Set this to true for HTTPS
+      secure: true,
     };
 
-    // Set cookies and send response
-    console.log(rfrTkn);
-    console.log(accTkn);
+
     return res
       .cookie("refreshToken", rfrTkn, options)
       .cookie("accessToken", accTkn, options)

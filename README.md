@@ -17,3 +17,6 @@ https://www.postman.com/sarmt/theassigner/overview
 ![Get @fetchAllForms](fetchAllForms.png)
 ## Send Form
 ![Post @sendForm](sendForm.png)
+
+# Email
+![email](email.png)
