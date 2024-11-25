@@ -2,21 +2,14 @@
 # Postman workspace 
 https://www.postman.com/sarmt/theassigner/overview
 
-# User
+## HomePage
+![Get @/](home_screen.png)
 
-## Login
-![Post @login](login.png)
-## Register
-![Post @register](userRegistration.png)
-## Logout
-![Post @logout](logout.png)
+# Google Auth
+## Rsult
+![Get @auth/google](google-auth-result.png)
 
-# Form
 
-## Fetch All Forms
-![Get @fetchAllForms](fetchAllForms.png)
-## Send Form
-![Post @sendForm](sendForm.png)
-
-# Email
-![email](email.png)
+# Facebook Auth
+## Rsult
+![Get @auth/fb](fb-auth-result.png)
