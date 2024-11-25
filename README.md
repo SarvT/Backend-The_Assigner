@@ -6,10 +6,10 @@ https://www.postman.com/sarmt/theassigner/overview
 ![Get @/](home_screen.png)
 
 # Google Auth
-## Rsult
+## Result
 ![Get @auth/google](google-auth-result.png)
 
 
 # Facebook Auth
-## Rsult
+## Result
 ![Get @auth/fb](fb-auth-result.png)

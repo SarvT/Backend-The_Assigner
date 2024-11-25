@@ -1,3 +1,4 @@
+// function to handle successfull request
 const successRedirect = async (req, res) => {
   try {
     if (!req.user) {
@@ -16,6 +17,7 @@ const successRedirect = async (req, res) => {
   }
 };
 
+// function to handle failure request
 const failureRedirect = async (req, res) => {
   res.status(200).json({
     success: false,

@@ -26,16 +26,18 @@ app.use(
 app.use(
   session({
     secret: process.env.KEY_1,
-    resave: false, 
+    resave: false,
     saveUninitialized: false,
     cookie: { secure: false },
   })
 );
 
+// adding suppport for initialize and support
 app.use(passport.initialize());
 app.use(passport.session());
 app.use("/auth", userRouter);
 
+// default endpoint
 app.get("/", (req, res) => {
   res.send(
     "Welcome for verification! <br> <button><a href='/auth/google'>Login With Google</a></button> <br> Welcome for verification! <br> <button><a href='/auth/fb'>Login With Facebook</a></button>"
@@ -43,4 +45,3 @@ app.get("/", (req, res) => {
 });
 
 export { app };
- 
