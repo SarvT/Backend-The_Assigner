@@ -1,5 +1,5 @@
 {
-  "name": "google-auth",
+  "name": "careers-aws",
   "type": "module",
   "version": "1.0.0",
   "description": "",
@@ -14,10 +14,8 @@
   "dependencies": {
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
-    "express-session": "^1.18.1",
-    "passport": "^0.7.0",
-    "passport-facebook": "^3.0.0",
-    "passport-google-oauth2": "^0.2.0"
+    "mongoose": "^8.8.2",
+    "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"

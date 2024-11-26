@@ -13,9 +13,7 @@ verification
 google-auth/.env
 google-auth/node_modules
 
-sendForm.png
-userRegistration.png
-fetchAllForms.png
-email.png
-login.png
-logout.png
+careers-aws/.env
+careers-aws/node_modules
+
+
